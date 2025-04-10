@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Aplicación de Videojuego</title>
+</head>
+<body>
+  <h1>Bienvenido a Treasure Maze</h1>
+  <p>¡Juega y comparte tu resultado!</p>
+
+  <!-- Botón para iniciar sesión con Facebook -->
+  <button onclick="loginWithFacebook()">Iniciar sesión con Facebook</button>
+
+  <!-- Botón para compartir el resultado -->
+  <button onclick="shareResult()" style="display:none;">Compartir mi resultado</button>
+
+  <!-- Cargar el SDK de JavaScript de Facebook -->
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '695689739480628', // Reemplaza con tu propio App ID
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v14.0' // Usa la versión más reciente de la API
+      });
+    };
+
+    // Cargar el SDK de manera asíncrona
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // Función para iniciar sesión en Facebook
+// Función para iniciar sesión en Facebook
+            function loginWithFacebook() {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                console.log('Conexión exitosa', response);
+                // Mostrar el botón de compartir
+                document.querySelector("button[onclick='shareResult()']").style.display = 'inline';
+                } else {
+                console.log('El usuario canceló el inicio de sesión');
+                }
+            }, {scope: 'publish_to_groups'});  // Solo el permiso necesario
+            }
+
+
+    // Función para compartir el resultado en Facebook
+    function shareResult() {
+      const puntos = 1500; // Puedes obtener este valor dinámicamente desde tu juego
+      const mensaje = `Estoy jugando Treasure Maze y gané con ${puntos} puntos. ¡Únete y juega también!`;
+
+      FB.api('/me/feed', 'post', {
+        message: mensaje,
+        link: 'https://www.tujuego.com' // Cambia a la URL de tu juego
+      }, function(response) {
+        if (!response || response.error) {
+          console.log('Error al compartir la publicación', response.error);
+        } else {
+          console.log('Publicación exitosa!', response);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
